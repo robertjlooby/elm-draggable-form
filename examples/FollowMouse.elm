@@ -4,8 +4,10 @@ import Color exposing (green)
 import DraggableForm as DF
 import Graphics.Collage exposing (collage)
 import Graphics.Element exposing (Element)
+import Maybe exposing (withDefault)
 import Mouse
 import Signal exposing ((<~), (~))
+import Touch
 import Window
 
 
@@ -62,7 +64,17 @@ main =
 
 
 events : Signal Action
-events = MouseMove <~ (relativePosition <~ Window.dimensions ~ Mouse.position)
+events = MouseMove <~ (relativePosition <~ Window.dimensions ~ pointerPosition)
+
+
+pointerPosition : Signal (Int, Int)
+pointerPosition =
+  let goodTouches = Signal.filter (\list -> not (List.isEmpty list)) [] Touch.touches
+      getTouchPosition = (\t -> (t.x, t.y))
+  in
+     Signal.merge
+       ((List.map getTouchPosition >> List.head >> withDefault (0, 0)) <~ goodTouches)
+       Mouse.position
 
 
 relativePosition : (Int, Int) -> (Int, Int) -> (Int, Int)
