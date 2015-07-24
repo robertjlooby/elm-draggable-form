@@ -1,6 +1,6 @@
 module Shapes where
 
-import Color exposing (black, blue)
+import Color exposing (black, blue, green)
 import DraggableForm as DF
 import Graphics.Collage exposing (collage)
 import Graphics.Element exposing (Element)
@@ -21,9 +21,9 @@ initialState =
   {
     draggableForms =
       { forms =
-          [ DF.createCircle black 100 (0, 0) 0
+          [ DF.createCircle green 100 (50, 50) 0
           , DF.createCircle blue 150 (50, 50) 0
-          , DF.createSquare blue 200 (-50, -50) 2
+          , DF.createSquare black 200 (-50, -50) 2
           ]
       , selectedId = Nothing
       }
