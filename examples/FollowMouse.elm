@@ -1,4 +1,4 @@
-module Shapes where
+module FollowMouse where
 
 import Color exposing (green)
 import DraggableForm as DF
