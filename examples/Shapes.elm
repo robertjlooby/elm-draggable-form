@@ -4,8 +4,9 @@ import Color exposing (black, blue, green)
 import DraggableForm as DF
 import Graphics.Collage exposing (collage)
 import Graphics.Element exposing (Element)
-import Mouse
+import Maybe exposing (withDefault)
 import Signal exposing ((<~), (~))
+import Touch
 import Window
 
 
@@ -33,19 +34,17 @@ initialState =
 -- Update
 
 type Action
-  = MouseMove (Int, Int)
-  | ChangeSelection Bool (Int, Int) (Int, Int)
+  = ChangeSelection Bool (Int, Int) (Int, Int)
 
 
 update : Action -> Model -> Model
 update action model =
   case action of
-    MouseMove newPosition ->
-      { model | draggableForms <- DF.update (DF.MoveSelected newPosition) model.draggableForms }
     ChangeSelection True mousePosition dimensions ->
       let position = relativePosition dimensions mousePosition
+          forms = DF.update (DF.ChangeSelection position) model.draggableForms
       in
-          { model | draggableForms <- DF.update (DF.ChangeSelection position) model.draggableForms }
+          { model | draggableForms <- DF.update (DF.MoveSelected position) forms }
     ChangeSelection False _ _ ->
       { model | draggableForms <- DF.update DF.UnselectAll model.draggableForms }
 
@@ -76,6 +75,17 @@ main =
 
 events : Signal Action
 events = Signal.mergeMany
-           [ MouseMove <~ (relativePosition <~ Window.dimensions ~ Mouse.position)
-           , ChangeSelection <~ Mouse.isDown ~ Mouse.position ~ Window.dimensions
+           [ ChangeSelection <~ activeTouches ~ touchPosition ~ Window.dimensions
            ]
+
+activeTouches : Signal Bool
+activeTouches =
+  (List.isEmpty >> not) <~ Touch.touches
+
+
+touchPosition : Signal (Int, Int)
+touchPosition =
+  let goodTouches = Signal.filter (\list -> not (List.isEmpty list)) [] Touch.touches
+      getTouchPosition = (\t -> (t.x, t.y))
+  in
+     (List.map getTouchPosition >> List.head >> withDefault (0, 0)) <~ goodTouches
