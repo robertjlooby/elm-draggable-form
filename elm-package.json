@@ -1,5 +1,5 @@
 {
-    "version": "1.0.0",
+    "version": "1.0.1",
     "summary": "A library for creating forms that can be dragged around.",
     "repository": "https://github.com/robertjlooby/elm-draggable-form.git",
     "license": "MIT",
@@ -7,7 +7,7 @@
         "src"
     ],
     "exposed-modules": [
-      "DraggableForm"
+        "DraggableForm"
     ],
     "dependencies": {
         "elm-lang/core": "2.0.0 <= v < 3.0.0"
