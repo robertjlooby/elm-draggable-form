@@ -7,7 +7,7 @@ be moved around a canvas.
 @docs Model, DraggableForm
 
 # Updating
-@docs Action.MoveSelection, Action.ChangeSelection, Action.UnselectAll
+@docs Action, update
 
 # Viewing
 @docs render
